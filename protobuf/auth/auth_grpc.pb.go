@@ -25,7 +25,6 @@ type AuthServiceClient interface {
 	StartLoginProcess(ctx context.Context, in *StartLoginProcessRequest, opts ...grpc.CallOption) (*StartLoginProcessResponse, error)
 	SendActivationCode(ctx context.Context, in *SendActivationCodeRequest, opts ...grpc.CallOption) (*SendActivationCodeResponse, error)
 	VerifyPhone(ctx context.Context, in *VerifyPhoneRequest, opts ...grpc.CallOption) (*VerifyPhoneResponse, error)
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 }
 
@@ -64,15 +63,6 @@ func (c *authServiceClient) VerifyPhone(ctx context.Context, in *VerifyPhoneRequ
 	return out, nil
 }
 
-func (c *authServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
-	out := new(RegisterResponse)
-	err := c.cc.Invoke(ctx, "/auth.AuthService/register", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *authServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error) {
 	out := new(RefreshTokenResponse)
 	err := c.cc.Invoke(ctx, "/auth.AuthService/refreshToken", in, out, opts...)
@@ -89,7 +79,6 @@ type AuthServiceServer interface {
 	StartLoginProcess(context.Context, *StartLoginProcessRequest) (*StartLoginProcessResponse, error)
 	SendActivationCode(context.Context, *SendActivationCodeRequest) (*SendActivationCodeResponse, error)
 	VerifyPhone(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error)
-	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 }
 
@@ -105,9 +94,6 @@ func (UnimplementedAuthServiceServer) SendActivationCode(context.Context, *SendA
 }
 func (UnimplementedAuthServiceServer) VerifyPhone(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPhone not implemented")
-}
-func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedAuthServiceServer) RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
@@ -178,24 +164,6 @@ func _AuthService_VerifyPhone_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).Register(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/auth.AuthService/register",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Register(ctx, req.(*RegisterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AuthService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RefreshTokenRequest)
 	if err := dec(in); err != nil {
@@ -232,10 +200,6 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "verifyPhone",
 			Handler:    _AuthService_VerifyPhone_Handler,
-		},
-		{
-			MethodName: "register",
-			Handler:    _AuthService_Register_Handler,
 		},
 		{
 			MethodName: "refreshToken",

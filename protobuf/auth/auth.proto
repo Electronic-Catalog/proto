@@ -8,7 +8,6 @@ service AuthService {
   rpc startLoginProcess (StartLoginProcessRequest) returns (StartLoginProcessResponse) {}
   rpc sendActivationCode (SendActivationCodeRequest) returns (SendActivationCodeResponse) {}
   rpc verifyPhone(VerifyPhoneRequest) returns (VerifyPhoneResponse) {}
-  rpc register(RegisterRequest) returns (RegisterResponse) {}
   rpc refreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
 }
 
@@ -40,33 +39,57 @@ message StartLoginProcessRequest {
 
 message StartLoginProcessResponse {
   ResponseGeneral response_general = 1;
+  int64 activation_id = 2;
+  string activation_code = 3;
+  string register_token = 4;
+  int64  expiration = 5;
 }
 
 message SendActivationCodeRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
+  int64 activation_id = 3;
+  string activation_code = 4;
+  string register_token = 5;
 }
 
 message SendActivationCodeResponse {
   ResponseGeneral response_general = 1;
+  int64 wait_in_second = 2;
+  int32 code_len = 3;
 }
 
 message VerifyPhoneRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
+  int64 activation_id = 3;
+  string activation_code = 4;
+  string register_token = 5;
+  string code = 6;
 }
 
 message VerifyPhoneResponse {
   ResponseGeneral response_general = 1;
+  int32 remaining_try_count = 2;
+  int64 remaining_wait_seconds = 3;
+  string phone = 4;
 }
 
 message RegisterRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
+  int64 activation_id = 3;
+  string activation_code = 4;
+  string register_token = 5;
 }
 
 message RegisterResponse{
   ResponseGeneral response_general = 1;
+  int64 app_id = 2;
+  string refresh_token = 3;
+  string access_token = 4;
+  int64 access_token_expiration = 5;
+  int64 refresh_token_request_timeout = 6;
 }
 
 message RefreshTokenRequest{
