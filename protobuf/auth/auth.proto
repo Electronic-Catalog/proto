@@ -50,7 +50,7 @@ message StartLoginProcessResponse {
 message SendActivationCodeRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
-  int64 activation_id = 3;
+  string activation_id = 3;
   string register_token = 5;
 }
 
@@ -63,7 +63,7 @@ message SendActivationCodeResponse {
 message VerifyPhoneRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
-  int64 activation_id = 3;
+  string activation_id = 3;
   string register_token = 5;
   string code = 6;
 }
@@ -78,7 +78,7 @@ message VerifyPhoneResponse {
 message RegisterRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
-  int64 activation_id = 3;
+  string activation_id = 3;
   string register_token = 5;
 }
 
