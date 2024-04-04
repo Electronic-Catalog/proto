@@ -41,7 +41,7 @@ message StartLoginProcessRequest {
 
 message StartLoginProcessResponse {
   ResponseGeneral response_general = 1;
-  int64 activation_id = 2;
+  string activation_id = 2;
   string register_token = 4;
   int64  expiration = 5;
 }
