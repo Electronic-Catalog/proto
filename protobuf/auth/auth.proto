@@ -18,6 +18,7 @@ message RequestGeneral {
   int64 request_id = 3;
   int64 request_time = 4;
   int64 app_id = 5;
+  string language = 6;
 }
 
 message ClientInfo {
