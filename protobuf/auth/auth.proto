@@ -9,6 +9,7 @@ service AuthService {
   rpc sendActivationCode (SendActivationCodeRequest) returns (SendActivationCodeResponse) {}
   rpc verifyPhone(VerifyPhoneRequest) returns (VerifyPhoneResponse) {}
   rpc refreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+  rpc signOut(SignOutRequest) returns (SignOutResponse) {}
 }
 
 message RequestGeneral {
@@ -16,6 +17,7 @@ message RequestGeneral {
   int64 account_id = 2;
   int64 request_id = 3;
   int64 request_time = 4;
+  int64 app_id = 5;
 }
 
 message ClientInfo {
@@ -91,9 +93,22 @@ message RegisterResponse{
 message RefreshTokenRequest{
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
+  string refresh_token = 3;
 }
 
 message RefreshTokenResponse{
   ResponseGeneral response_general = 1;
+  string access_token = 2;
+  int64 access_token_expiration = 3;
+  int64 refresh_token_request_timeout = 4;
 }
 
+message SignOutRequest {
+  ClientInfo client_info = 1;
+  RequestGeneral request_general = 2;
+  string refresh_token = 3;
+}
+
+message SignOutResponse {
+  ResponseGeneral response_general = 1;
+}
