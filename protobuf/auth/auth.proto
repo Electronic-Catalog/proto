@@ -72,23 +72,11 @@ message VerifyPhoneResponse {
   ResponseGeneral response_general = 1;
   int32 remaining_try_count = 2;
   int64 remaining_wait_seconds = 3;
-  string phone = 4;
-}
-
-message RegisterRequest {
-  ClientInfo client_info = 1;
-  RequestGeneral request_general = 2;
-  string activation_id = 3;
-  string register_token = 5;
-}
-
-message RegisterResponse{
-  ResponseGeneral response_general = 1;
-  int64 app_id = 2;
-  string refresh_token = 3;
   string access_token = 4;
   int64 access_token_expiration = 5;
   int64 refresh_token_request_timeout = 6;
+  string phone = 7;
+  string refresh_token = 8;
 }
 
 message RefreshTokenRequest{
