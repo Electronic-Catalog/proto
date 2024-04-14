@@ -27,6 +27,7 @@ type AuthServiceClient interface {
 	VerifyPhone(ctx context.Context, in *VerifyPhoneRequest, opts ...grpc.CallOption) (*VerifyPhoneResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*SignOutResponse, error)
+	VerifyIdentity(ctx context.Context, in *VerifyPhoneRequest, opts ...grpc.CallOption) (*VerifyPhoneResponse, error)
 }
 
 type authServiceClient struct {
@@ -82,6 +83,15 @@ func (c *authServiceClient) SignOut(ctx context.Context, in *SignOutRequest, opt
 	return out, nil
 }
 
+func (c *authServiceClient) VerifyIdentity(ctx context.Context, in *VerifyPhoneRequest, opts ...grpc.CallOption) (*VerifyPhoneResponse, error) {
+	out := new(VerifyPhoneResponse)
+	err := c.cc.Invoke(ctx, "/auth.AuthService/verifyIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations should embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -91,6 +101,7 @@ type AuthServiceServer interface {
 	VerifyPhone(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error)
+	VerifyIdentity(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error)
 }
 
 // UnimplementedAuthServiceServer should be embedded to have forward compatible implementations.
@@ -111,6 +122,9 @@ func (UnimplementedAuthServiceServer) RefreshToken(context.Context, *RefreshToke
 }
 func (UnimplementedAuthServiceServer) SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignOut not implemented")
+}
+func (UnimplementedAuthServiceServer) VerifyIdentity(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyIdentity not implemented")
 }
 
 // UnsafeAuthServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -214,6 +228,24 @@ func _AuthService_SignOut_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_VerifyIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyPhoneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).VerifyIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.AuthService/verifyIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).VerifyIdentity(ctx, req.(*VerifyPhoneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -240,6 +272,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "signOut",
 			Handler:    _AuthService_SignOut_Handler,
+		},
+		{
+			MethodName: "verifyIdentity",
+			Handler:    _AuthService_VerifyIdentity_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

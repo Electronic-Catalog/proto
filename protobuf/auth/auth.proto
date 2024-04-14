@@ -10,6 +10,7 @@ service AuthService {
   rpc verifyPhone(VerifyPhoneRequest) returns (VerifyPhoneResponse) {}
   rpc refreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
   rpc signOut(SignOutRequest) returns (SignOutResponse) {}
+  rpc verifyIdentity(VerifyPhoneRequest) returns (VerifyPhoneResponse) {}
 }
 
 message RequestGeneral {
@@ -99,5 +100,16 @@ message SignOutRequest {
 }
 
 message SignOutResponse {
+  ResponseGeneral response_general = 1;
+}
+
+message VerifyIdentityRequest {
+  ClientInfo client_info = 1;
+  RequestGeneral request_general = 2;
+  string NationalCode = 3;
+  string BirthDate = 4;
+}
+
+message VerifyIdentityResponse {
   ResponseGeneral response_general = 1;
 }
