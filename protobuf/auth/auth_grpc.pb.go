@@ -27,7 +27,7 @@ type AuthServiceClient interface {
 	VerifyPhone(ctx context.Context, in *VerifyPhoneRequest, opts ...grpc.CallOption) (*VerifyPhoneResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*SignOutResponse, error)
-	VerifyIdentity(ctx context.Context, in *VerifyPhoneRequest, opts ...grpc.CallOption) (*VerifyPhoneResponse, error)
+	VerifyIdentity(ctx context.Context, in *VerifyIdentityRequest, opts ...grpc.CallOption) (*VerifyIdentityResponse, error)
 }
 
 type authServiceClient struct {
@@ -83,8 +83,8 @@ func (c *authServiceClient) SignOut(ctx context.Context, in *SignOutRequest, opt
 	return out, nil
 }
 
-func (c *authServiceClient) VerifyIdentity(ctx context.Context, in *VerifyPhoneRequest, opts ...grpc.CallOption) (*VerifyPhoneResponse, error) {
-	out := new(VerifyPhoneResponse)
+func (c *authServiceClient) VerifyIdentity(ctx context.Context, in *VerifyIdentityRequest, opts ...grpc.CallOption) (*VerifyIdentityResponse, error) {
+	out := new(VerifyIdentityResponse)
 	err := c.cc.Invoke(ctx, "/auth.AuthService/verifyIdentity", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -101,7 +101,7 @@ type AuthServiceServer interface {
 	VerifyPhone(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error)
-	VerifyIdentity(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error)
+	VerifyIdentity(context.Context, *VerifyIdentityRequest) (*VerifyIdentityResponse, error)
 }
 
 // UnimplementedAuthServiceServer should be embedded to have forward compatible implementations.
@@ -123,7 +123,7 @@ func (UnimplementedAuthServiceServer) RefreshToken(context.Context, *RefreshToke
 func (UnimplementedAuthServiceServer) SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignOut not implemented")
 }
-func (UnimplementedAuthServiceServer) VerifyIdentity(context.Context, *VerifyPhoneRequest) (*VerifyPhoneResponse, error) {
+func (UnimplementedAuthServiceServer) VerifyIdentity(context.Context, *VerifyIdentityRequest) (*VerifyIdentityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyIdentity not implemented")
 }
 
@@ -229,7 +229,7 @@ func _AuthService_SignOut_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _AuthService_VerifyIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyPhoneRequest)
+	in := new(VerifyIdentityRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -241,7 +241,7 @@ func _AuthService_VerifyIdentity_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/auth.AuthService/verifyIdentity",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).VerifyIdentity(ctx, req.(*VerifyPhoneRequest))
+		return srv.(AuthServiceServer).VerifyIdentity(ctx, req.(*VerifyIdentityRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
