@@ -28,6 +28,7 @@ type AuthServiceClient interface {
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*SignOutResponse, error)
 	VerifyIdentity(ctx context.Context, in *VerifyIdentityRequest, opts ...grpc.CallOption) (*VerifyIdentityResponse, error)
+	GetIdentity(ctx context.Context, in *GetIdentityRequest, opts ...grpc.CallOption) (*GetIdentityResponse, error)
 }
 
 type authServiceClient struct {
@@ -92,6 +93,15 @@ func (c *authServiceClient) VerifyIdentity(ctx context.Context, in *VerifyIdenti
 	return out, nil
 }
 
+func (c *authServiceClient) GetIdentity(ctx context.Context, in *GetIdentityRequest, opts ...grpc.CallOption) (*GetIdentityResponse, error) {
+	out := new(GetIdentityResponse)
+	err := c.cc.Invoke(ctx, "/auth.AuthService/getIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations should embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type AuthServiceServer interface {
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error)
 	VerifyIdentity(context.Context, *VerifyIdentityRequest) (*VerifyIdentityResponse, error)
+	GetIdentity(context.Context, *GetIdentityRequest) (*GetIdentityResponse, error)
 }
 
 // UnimplementedAuthServiceServer should be embedded to have forward compatible implementations.
@@ -125,6 +136,9 @@ func (UnimplementedAuthServiceServer) SignOut(context.Context, *SignOutRequest) 
 }
 func (UnimplementedAuthServiceServer) VerifyIdentity(context.Context, *VerifyIdentityRequest) (*VerifyIdentityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyIdentity not implemented")
+}
+func (UnimplementedAuthServiceServer) GetIdentity(context.Context, *GetIdentityRequest) (*GetIdentityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIdentity not implemented")
 }
 
 // UnsafeAuthServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -246,6 +260,24 @@ func _AuthService_VerifyIdentity_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GetIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetIdentityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.AuthService/getIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetIdentity(ctx, req.(*GetIdentityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -276,6 +308,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "verifyIdentity",
 			Handler:    _AuthService_VerifyIdentity_Handler,
+		},
+		{
+			MethodName: "getIdentity",
+			Handler:    _AuthService_GetIdentity_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

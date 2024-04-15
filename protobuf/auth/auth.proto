@@ -11,6 +11,7 @@ service AuthService {
   rpc refreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
   rpc signOut(SignOutRequest) returns (SignOutResponse) {}
   rpc verifyIdentity(VerifyIdentityRequest) returns (VerifyIdentityResponse) {}
+  rpc getIdentity(GetIdentityRequest) returns (GetIdentityResponse) {}
 }
 
 message RequestGeneral {
@@ -106,10 +107,25 @@ message SignOutResponse {
 message VerifyIdentityRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
-  string NationalCode = 3;
-  string BirthDate = 4;
+  string national_code = 3;
+  string birth_date = 4;
 }
 
 message VerifyIdentityResponse {
   ResponseGeneral response_general = 1;
+}
+
+message GetIdentityRequest {
+  ClientInfo client_info = 1;
+  RequestGeneral request_general = 2;
+}
+
+message GetIdentityResponse {
+  ResponseGeneral response_general = 1;
+  string national_code = 2;
+  string birth_date = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string extra = 6;
+  int64 verification_date = 7;
 }
