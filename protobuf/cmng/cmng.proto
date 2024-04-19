@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package cmng;
+
+option go_package = "./cmng";
+
+service CardManagementService {
+  rpc getCard (GetCardRequest) returns (GetCardResponse) {}
+}
+
+message RequestGeneral {
+  string mobile_number = 1;
+  int64 account_id = 2;
+  int64 request_id = 3;
+  int64 request_time = 4;
+  int64 app_id = 5;
+  string language = 6;
+}
+
+message ClientInfo {
+  string client_ip = 1;
+  string client_agent = 2;
+  string client_device_id = 3;
+  string client_version = 4;
+  int32 distribution_code = 5;
+  string client_os = 6;
+}
+
+message ResponseGeneral {
+  int32 status = 1;
+  string status_message = 2;
+}
+
+message GetCardRequest {
+  ClientInfo client_info = 1;
+  RequestGeneral request_general = 2;
+}
+
+message GetCardResponse {
+  ResponseGeneral response_general = 1;
+  string card_number = 2;
+  string expiration = 3;
+  string cvv2 = 4;
+  string balance = 5;
+  string credit = 6;
+}
