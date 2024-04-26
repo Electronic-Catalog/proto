@@ -5,6 +5,7 @@ package cmng;
 option go_package = "./cmng";
 
 service CardManagementService {
+  rpc setCard (SetCardRequest) returns (SetCardResponse) {}
   rpc getCard (GetCardRequest) returns (GetCardResponse) {}
 }
 
@@ -31,6 +32,18 @@ message ResponseGeneral {
   string status_message = 2;
 }
 
+message SetCardRequest {
+  ClientInfo client_info = 1;
+  RequestGeneral request_general = 2;
+  string card_number = 3;
+  string expiration = 4;
+  string cvv2 = 5;
+}
+
+message SetCardResponse {
+  ResponseGeneral response_general = 1;
+}
+
 message GetCardRequest {
   ClientInfo client_info = 1;
   RequestGeneral request_general = 2;
@@ -43,4 +56,27 @@ message GetCardResponse {
   string cvv2 = 4;
   string balance = 5;
   string credit = 6;
+}
+
+message GetTransactionsRequest {
+  ClientInfo client_info = 1;
+  RequestGeneral request_general = 2;
+  int64 page = 3;
+  int32 limit = 4;
+  string card_number = 5;
+}
+
+message TransactionItem {
+  int64 applied_amount = 1;
+  string status = 2;
+  int64 date = 3;
+  int64 time = 4;
+  string applied_amount_description = 5;
+}
+
+message GetTransactionsResponse {
+  ResponseGeneral response_general = 1;
+  int64 page = 2;
+  int32 limit = 3;
+  repeated TransactionItem transactions = 4;
 }

@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CardManagementServiceClient interface {
+	SetCard(ctx context.Context, in *SetCardRequest, opts ...grpc.CallOption) (*SetCardResponse, error)
 	GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*GetCardResponse, error)
 }
 
@@ -31,6 +32,15 @@ type cardManagementServiceClient struct {
 
 func NewCardManagementServiceClient(cc grpc.ClientConnInterface) CardManagementServiceClient {
 	return &cardManagementServiceClient{cc}
+}
+
+func (c *cardManagementServiceClient) SetCard(ctx context.Context, in *SetCardRequest, opts ...grpc.CallOption) (*SetCardResponse, error) {
+	out := new(SetCardResponse)
+	err := c.cc.Invoke(ctx, "/cmng.CardManagementService/setCard", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *cardManagementServiceClient) GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*GetCardResponse, error) {
@@ -46,6 +56,7 @@ func (c *cardManagementServiceClient) GetCard(ctx context.Context, in *GetCardRe
 // All implementations should embed UnimplementedCardManagementServiceServer
 // for forward compatibility
 type CardManagementServiceServer interface {
+	SetCard(context.Context, *SetCardRequest) (*SetCardResponse, error)
 	GetCard(context.Context, *GetCardRequest) (*GetCardResponse, error)
 }
 
@@ -53,6 +64,9 @@ type CardManagementServiceServer interface {
 type UnimplementedCardManagementServiceServer struct {
 }
 
+func (UnimplementedCardManagementServiceServer) SetCard(context.Context, *SetCardRequest) (*SetCardResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetCard not implemented")
+}
 func (UnimplementedCardManagementServiceServer) GetCard(context.Context, *GetCardRequest) (*GetCardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCard not implemented")
 }
@@ -66,6 +80,24 @@ type UnsafeCardManagementServiceServer interface {
 
 func RegisterCardManagementServiceServer(s grpc.ServiceRegistrar, srv CardManagementServiceServer) {
 	s.RegisterService(&CardManagementService_ServiceDesc, srv)
+}
+
+func _CardManagementService_SetCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetCardRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CardManagementServiceServer).SetCard(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cmng.CardManagementService/setCard",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CardManagementServiceServer).SetCard(ctx, req.(*SetCardRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _CardManagementService_GetCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -93,6 +125,10 @@ var CardManagementService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "cmng.CardManagementService",
 	HandlerType: (*CardManagementServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "setCard",
+			Handler:    _CardManagementService_SetCard_Handler,
+		},
 		{
 			MethodName: "getCard",
 			Handler:    _CardManagementService_GetCard_Handler,
