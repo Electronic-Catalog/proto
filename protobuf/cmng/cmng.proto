@@ -7,6 +7,7 @@ option go_package = "./cmng";
 service CardManagementService {
   rpc setCard (SetCardRequest) returns (SetCardResponse) {}
   rpc getCard (GetCardRequest) returns (GetCardResponse) {}
+  rpc listTransactions(GetTransactionsRequest) returns (GetTransactionsResponse) {}
 }
 
 message RequestGeneral {
